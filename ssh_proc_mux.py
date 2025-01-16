@@ -145,6 +145,8 @@ def init_ssh_session(host):
 
     if host not in ssh_sessions:
         try:
+            print(f"Starting ssh session for {host}")
+
             command_buffer[host] = queue.Queue()
             ssh_session_ready[host] = 0
 
@@ -161,10 +163,11 @@ def init_ssh_session(host):
 
             watch_process(host, ssh_sessions[host])
 
+            print(f"Host {host} processes are children of {ssh_sessions[host].pid}")
+
         except Exception as e:
             raise e
 
-    print(f"Host {host} processes are children of {ssh_sessions[host].pid}")
 
     max_wait = 20
 
@@ -180,6 +183,7 @@ def init_ssh_session(host):
 @click.argument("cmd")
 @click.argument("host")
 def launch(cmd: str, host: str):
+    global command_buffer
     init_ssh_session(host)
     command_buffer[host].put(f'launch "{cmd}"\r')
 
@@ -187,16 +191,35 @@ def launch(cmd: str, host: str):
 @ssh_client.command()
 @click.argument("host")
 def ps(host: str):
+    global command_buffer
     init_ssh_session(host)
     command_buffer[host].put("ps\r")
 
 
 @ssh_client.command()
-def kill():
+@click.argument("host")
+def killall(host: str):
+    global command_buffer
+    init_ssh_session(host)
+    command_buffer[host].put("killall\r")
+
+
+@ssh_client.command()
+@click.argument("pid", type=int)
+@click.argument("host", type=str)
+def kill(pid: int, host:str):
+    global command_buffer
+    init_ssh_session(host)
+    command_buffer[host].put(f"kill {pid}\r")
+
+
+@ssh_client.command()
+@click.argument("host")
+def disconnect(host: str):
     global ssh_sessions
-    for session in ssh_sessions.values():
-        session.kill()
-    ssh_sessions = {}
+    if host in ssh_sessions:
+        ssh_sessions[host].kill()
+        del ssh_sessions[host]
 
 
 if __name__ == "__main__":

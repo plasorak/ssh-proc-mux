@@ -52,17 +52,27 @@ def ps():
             )
         )
 
+@launcher.command()
+@click.argument("pid", type=int)
+def kill(pid: int):
+    global processes, pid_to_command
+    for proc in processes:
+        if proc.pid != pid:
+            continue
+        if proc.poll() is not None:
+            continue
+        proc.kill()
+        print(f"Killed process {pid} ({pid_to_command[pid]})")
+
 
 @launcher.command()
 def killall():
-    global processes
+    global processes, pid_to_command
     for proc in processes:
         if proc.poll() is not None:
             continue
         proc.kill()
-        pid_to_command.pop(proc.pid)
-    processes = []
-
+        print(f"Killed process {proc.pid} ({pid_to_command[proc.pid]})")
 
 if __name__ == "__main__":
     print("Starting launcher")
