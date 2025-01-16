@@ -65,7 +65,7 @@ class SSHLauncherProcessWatcherThread(threading.Thread):
             self.process.wait()
 
         except sh.SignalException_SIGKILL as e:
-            print(f"Host {self.host} process killed")
+            pass
 
         except sh.ErrorReturnCode as e:
             print(f"Host {self.host} process exited with error {e}")
