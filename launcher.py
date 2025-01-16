@@ -25,7 +25,7 @@ def echo():
 @click.argument("cmd")
 def launch(cmd:str):
     global processes
-    proc = subprocess.Popen(cmd.split(" "))
+    proc = subprocess.Popen(cmd, shell=True)
     print(f"Started process with pid {proc.pid} ({cmd})")
     processes.append(proc)
 
