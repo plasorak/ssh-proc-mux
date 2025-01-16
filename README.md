@@ -46,7 +46,7 @@ To kill all the processes, which severs the ssh connection:
 ssh-proc-mux > kill
 ```
 
-This program has a stdout going out of bounds with the prompt, so you may need to hit enter to get back to the prompt.
+This program has a `stdout` asynchronous with the prompt, so you may need to hit enter to get back to the prompt.
 
 And finally a word of caution, this program is _experimental_...
 
@@ -55,4 +55,4 @@ And finally a word of caution, this program is _experimental_...
 This tool uses a python launcher `launcher.py` to start subprocesses on the remote host. `ssh_proc_mux.py` just waits for the python prompt in `launcher.py` to start and then stdin command to it. The upshot is that there isn't any socket opened by `launcher.py`, so it can be run on a remote host without any firewall rules.
 
 ## Known issues
-- On Mac, the launcher process cannot be tied to the ssh_proc_mux process. This means if you `SIGQUIT` the ssh_proc_mux process, the launcher process will not be killed. It should work on Linux.
+- On Mac, the launcher process cannot be tied to the `ssh_proc_mux` process. This means if you `SIGQUIT` the `ssh_proc_mux` process, the launcher process will not be killed. That shouldn't be the case on Linux.
