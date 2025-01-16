@@ -27,11 +27,11 @@ ssh localhost
 
 ```bash
 python3 ssh_proc_mux.py
-ssh-proc-mux > launch "sleep 10 && touch ABC" localhost
-ssh-proc-mux > launch "sleep 10 && touch DEF" localhost
-ssh-proc-mux > launch "sleep 10 && touch GHI" localhost
-ssh-proc-mux > launch "sleep 10 && touch JKL" localhost
-ssh-proc-mux > launch "sleep 10 && touch MNO" localhost
+ssh-proc-mux > launch 'echo "Hello World ABC" && sleep 10 && echo "Now touching ABC" && touch ABC' localhost
+ssh-proc-mux > launch 'echo "Hello World DEF" && sleep 10 && echo "Now touching DEF" && touch DEF' localhost
+ssh-proc-mux > launch 'echo "Hello World GHI" && sleep 10 && echo "Now touching GHI" && touch GHI' localhost
+ssh-proc-mux > launch 'echo "Hello World JKL" && sleep 10 && echo "Now touching JKL" && touch JKL' localhost
+ssh-proc-mux > launch 'echo "Hello World MNO" && sleep 10 && echo "Now touching MNO" && touch MNO' localhost
 ```
 Hopefully, you now have 5 files in your current directory, named ABC, DEF, GHI, JKL and MNO.
 
