@@ -12,7 +12,7 @@ def terminate_all(sig, frame):
 
 processes = []
 
-@click_shell.shell(prompt='local-process-launcher > ')
+@click_shell.shell(prompt='local-process-launcher > ', hist_file='~/.local_process_launcher.history')
 def launcher():
     global processes
     signal.signal(signal.SIGHUP, terminate_all)

@@ -99,7 +99,7 @@ def ssh_interact(char, stdin):
     command_buffer = ""
 
 
-@click_shell.shell(prompt='ssh-proc-mux > ')
+@click_shell.shell(prompt='ssh-proc-mux > ', hist_file='~/.ssh_proc_mux.history')
 @click.option('--log-level', type=click.Choice(['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], case_sensitive=False), default='INFO')
 @click.pass_context
 def ssh_client(ctx, log_level:str):
