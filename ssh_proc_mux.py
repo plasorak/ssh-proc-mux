@@ -46,9 +46,9 @@ def watch_process(host, process):
 def ssh_interact(char, stdin):
     global aggregated, command_buffer
 
-    ssh_logger.info(char)
+    ssh_logger.info(char) # We print all the stdout in the shell
 
-    if "drunc-local-process-launcher >" in char:
+    if "local-process-launcher > " in char:
         time.sleep(0.1)
         return
 
@@ -60,11 +60,11 @@ def ssh_interact(char, stdin):
     command_buffer = ""
 
 
-@click_shell.shell(prompt='drunc-ssh-python > ')
+@click_shell.shell(prompt='ssh-proc-mux > ')
 @click.option('--log-level', type=click.Choice(['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], case_sensitive=False), default='INFO')
 @click.pass_context
 def ssh_client(ctx, log_level:str):
-    logging.basicConfig(level=log_level.upper())
+    logging.basicConfig(format='%(name)s: %(message)s', level=log_level.upper())
     sh_logger = logging.getLogger('sh')
     sh_logger.setLevel(logging.WARNING)
 
