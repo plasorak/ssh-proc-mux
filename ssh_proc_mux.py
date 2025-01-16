@@ -182,10 +182,14 @@ def init_ssh_session(host):
 @ssh_client.command()
 @click.argument("cmd")
 @click.argument("host")
-def launch(cmd: str, host: str):
+@click.option("--id", type=str, default=None)
+def launch(cmd: str, host: str, id:str=None):
     global command_buffer
     init_ssh_session(host)
-    command_buffer[host].put(f'launch "{cmd}"\r')
+    if id is not None:
+        command_buffer[host].put(f'launch "{cmd}" --id {id}\r')
+    else:
+        command_buffer[host].put(f'launch "{cmd}"\r')
 
 
 @ssh_client.command()

@@ -39,6 +39,12 @@ ssh-proc-mux > launch '{ echo \"Hello World MNO\" && sleep 10 && echo \"Now touc
 ```
 Hopefully, you now have 5 files in your current directory, named ABC, DEF, GHI, JKL and MNO, and MNO contains the output of the command. You should also see the stdout of the commands, they start with `ssh_stdout.localhost:`.
 
+Note, one can add an `--id` to the `launch` command:
+```bash
+ssh-proc-mux > launch --id MNO 'echo \"Hello World MNO\" && sleep 10 && echo \"Now touching MNO\" && touch MNO' localhost
+```
+This will make the launcher print `__{id}__pid__{pid}__` in the `stdout` of the `launch` command, which can be useful if case the `stdout` is processed by another program to extract the pid.
+
 Always useful to check the processes:
 ```bash
 ssh-proc-mux > ps

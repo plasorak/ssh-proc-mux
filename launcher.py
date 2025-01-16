@@ -30,11 +30,14 @@ def echo():
 
 @launcher.command()
 @click.argument("cmd")
-def launch(cmd: str):
+@click.option("--id", type=str, default=None)
+def launch(cmd: str, id:str=None):
     global processes, pid_to_command
     print(f"Launching {cmd}")
     proc = subprocess.Popen(cmd, shell=True)
     print(f"Started process with pid {proc.pid} ({cmd})")
+    if id is not None:
+        print(f"__{id}__pid__{proc.pid}__")
     processes.append(proc)
     pid_to_command[proc.pid] = cmd
 
