@@ -75,7 +75,7 @@ class SSHLauncherProcessWatcherThread(threading.Thread):
 
         except sh.ErrorReturnCode as e:
             print(f"Host {self.host} process exited with error {e}")
-            ssh_session_ready[self.host] = -e.exit_code
+            ssh_session_ready[self.host] = -abs(e.exit_code)
 
         finally:
             print(f"Host {self.host} process exited")
