@@ -11,9 +11,9 @@ import threading
 from functools import partial
 import os
 ssh_sessions = {}
-
+interrupted = False
 aggregated = ""
-command_buffer = ""
+command_buffer = []
 ssh_logger = logging.getLogger('ssh_stdout')
 
 # ------------------------------------------------
@@ -84,20 +84,24 @@ def watch_process(host, process):
 
 
 def ssh_interact(host, char, stdin):
-    global aggregated, command_buffer
+    global aggregated, command_buffer, interrupted
     this_logger = logging.getLogger(f'ssh_stdout.{host}')
-    this_logger.info(char) # We print all the stdout in the shell
+    this_logger.info(char[:-1]) # We print all the stdout in the shell
 
-    if "local-process-launcher > " in char:
-        time.sleep(0.1)
+    while not interrupted:
+        if command_buffer == []:
+            time.sleep(0.5)
+            continue
+
+        if "local-process-launcher >" not in char:
+            stdin.put('\r')
+            time.sleep(0.1)
+            return
+
+        for command in command_buffer:
+            stdin.put(f'launch "{command}"\r')
+        command_buffer = []
         return
-
-    if command_buffer == "":
-        time.sleep(0.1)
-        return
-
-    stdin.put(f'launch "{command_buffer}"\r')
-    command_buffer = ""
 
 
 @click_shell.shell(prompt='ssh-proc-mux > ', hist_file='~/.ssh_proc_mux.history')
@@ -109,7 +113,8 @@ def ssh_client(ctx, log_level:str):
     sh_logger.setLevel(logging.WARNING)
 
     def cleanup():
-        global ssh_sessions
+        global ssh_sessions, interrupted
+        interrupted = True
         for session in ssh_sessions.values():
             session.kill()
         ssh_sessions = {}
@@ -147,7 +152,7 @@ def launch(cmd:str, host:str):
 
     print(f"Host {host} processes are children of {ssh_sessions[host].pid}")
 
-    command_buffer = cmd
+    command_buffer += [cmd]
 
 
 @ssh_client.command()
