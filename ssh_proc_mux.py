@@ -174,7 +174,7 @@ def init_ssh_session(host):
     while ssh_session_ready[host] <= 0:
         time.sleep(0.1)
         max_wait -= 1
-        if max_wait == 0:
+        if max_wait <= 0:
             print(f"SSH could not start on {host}")
             return
 
