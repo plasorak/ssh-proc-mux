@@ -8,6 +8,7 @@ import logging
 import signal
 import getpass
 import threading
+from functools import partial
 import os
 ssh_sessions = {}
 
@@ -82,10 +83,10 @@ def watch_process(host, process):
 
 
 
-def ssh_interact(char, stdin):
+def ssh_interact(host, char, stdin):
     global aggregated, command_buffer
-
-    ssh_logger.info(char) # We print all the stdout in the shell
+    this_logger = logging.getLogger(f'ssh_stdout.{host}')
+    this_logger.info(char) # We print all the stdout in the shell
 
     if "local-process-launcher > " in char:
         time.sleep(0.1)
