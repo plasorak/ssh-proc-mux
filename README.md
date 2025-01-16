@@ -27,14 +27,32 @@ ssh localhost
 
 ```bash
 python3 ssh_proc_mux.py
-ssh-proc-mux > launch 'echo "Hello World ABC" && sleep 10 && echo "Now touching ABC" && touch ABC' localhost
-ssh-proc-mux > launch 'echo "Hello World DEF" && sleep 10 && echo "Now touching DEF" && touch DEF' localhost
-ssh-proc-mux > launch 'echo "Hello World GHI" && sleep 10 && echo "Now touching GHI" && touch GHI' localhost
-ssh-proc-mux > launch 'echo "Hello World JKL" && sleep 10 && echo "Now touching JKL" && touch JKL' localhost
-ssh-proc-mux > launch 'echo "Hello World MNO" && sleep 10 && echo "Now touching MNO" && touch MNO' localhost
+ssh-proc-mux > launch 'echo \"Hello World ABC\" && sleep 10 && echo \"Now touching ABC\" && touch ABC' localhost
+ssh-proc-mux > launch 'echo \"Hello World DEF\" && sleep 10 && echo \"Now touching DEF\" && touch DEF' localhost
+ssh-proc-mux > launch 'echo \"Hello World GHI\" && sleep 10 && echo \"Now touching GHI\" && touch GHI' localhost
+ssh-proc-mux > launch 'echo \"Hello World JKL\" && sleep 10 && echo \"Now touching JKL\" && touch JKL' localhost
+ssh-proc-mux > launch 'echo \"Hello World MNO\" && sleep 10 && echo \"Now touching MNO\" && touch MNO' localhost
+ssh-proc-mux > launch '{ echo \"Hello World MNO\" && sleep 10 && echo \"Now touching MNO\"; } &> MNO' localhost
 ```
-Hopefully, you now have 5 files in your current directory, named ABC, DEF, GHI, JKL and MNO.
+Hopefully, you now have 5 files in your current directory, named ABC, DEF, GHI, JKL and MNO, and MNO contains the output of the command. You should also see the stdout of the commands, they start with `ssh_stdout.localhost:`.
+
+Always useful to check the processes:
+```bash
+ssh-proc-mux > ps
+```
+
+To kill all the processes, which severs the ssh connection:
+```bash
+ssh-proc-mux > kill
+```
+
+This program has a stdout going out of bounds with the prompt, so you may need to hit enter to get back to the prompt.
+
+And finally a word of caution, this program is _experimental_...
 
 ## Description
 
 This tool uses a python launcher `launcher.py` to start subprocesses on the remote host. `ssh_proc_mux.py` just waits for the python prompt in `launcher.py` to start and then stdin command to it. The upshot is that there isn't any socket opened by `launcher.py`, so it can be run on a remote host without any firewall rules.
+
+## Known issues
+- On Mac, the launcher process cannot be tied to the ssh_proc_mux process. This means if you `SIGQUIT` the ssh_proc_mux process, the launcher process will not be killed. It should work on Linux.
