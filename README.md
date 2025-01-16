@@ -41,9 +41,19 @@ Always useful to check the processes:
 ssh-proc-mux > ps
 ```
 
-To kill all the processes, which severs the ssh connection:
+To kill all the processes on a host:
 ```bash
-ssh-proc-mux > kill
+ssh-proc-mux > killall localhost
+```
+
+To kill a specific process on a host:
+```bash
+ssh-proc-mux > kill 123 localhost
+```
+
+To disconnect from a host (and kill all the processes on it):
+```bash
+ssh-proc-mux > disconnect localhost
 ```
 
 This program has a `stdout` asynchronous with the prompt, so you may need to hit enter to get back to the prompt.
