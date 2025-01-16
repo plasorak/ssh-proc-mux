@@ -90,7 +90,7 @@ def ssh_interact(host, char, stdin):
 
     while not interrupted:
         if command_buffer == []:
-            time.sleep(0.5)
+            time.sleep(0.1)
             continue
 
         if "local-process-launcher >" not in char:
