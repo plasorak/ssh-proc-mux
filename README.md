@@ -3,13 +3,16 @@
 This is a simple tool to run multiple processes over SSH and interact with them.
 
 ## Installation
-
 ```bash
-python3 -m venv venv
+git clone https://github.com/plasorak/ssh-proc-mux.git
+cd ssh-proc-mux
+python3 -m venv venv # You are not allowed to change the name of the venv!
 source venv/bin/activate
 pip install -r requirements.txt
 # Play
 ```
+Note there _has to_ be a `venv` directory in the `PWD` for this to work. The `venv` directory is hardcoded in the `ssh_proc_mux.py` file.
+
 After finishing, you can exit the virtual environment with the command `deactivate` (or just close the shell).
 
 This tool requires password less ssh keys to be able to ssh to the remote host. To do this and be able to run the example below, you can do:
