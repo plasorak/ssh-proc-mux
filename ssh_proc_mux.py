@@ -131,7 +131,14 @@ def launch(cmd:str, host:str):
 
     if host not in ssh_sessions:
         try:
-            ssh_sessions[host] = sh.ssh(*ssh_arguments, _bg=True, _out=ssh_interact, _preexec_fn=pre_execution_hook(signal.SIGTERM, [signal.SIGINT]))
+            ssh_sessions[host] = sh.ssh(
+                *ssh_arguments,
+                _bg=True,
+                _bg_exc=False,
+                _out=partial(ssh_interact, host),
+                _preexec_fn=pre_execution_hook(signal.SIGTERM, [signal.SIGINT]),
+                _new_session=True,
+            )
             watch_process(host, ssh_sessions[host])
         except Exception as e:
             print(e)
