@@ -53,8 +53,6 @@ def pre_execution_hook(signal_parent_exit, ignore_signals=[]):
             raise PrCtlError("prctl failed with error code %s" % result)
 
     return set_parent_exit_signal
-
-
 # ------------------------------------------------
 
 
@@ -112,7 +110,7 @@ def ssh_interact(host, char):
     default="INFO",
 )
 @click.pass_context
-def ssh_client(ctx, log_level: str):
+def ssh_proc_mux_shell(ctx, log_level: str):
     logging.basicConfig(format="%(name)s: %(message)s", level=log_level.upper())
     sh_logger = logging.getLogger("sh")
     sh_logger.setLevel(logging.WARNING)
@@ -179,7 +177,7 @@ def init_ssh_session(host):
             return
 
 
-@ssh_client.command()
+@ssh_proc_mux_shell.command()
 @click.argument("cmd")
 @click.argument("host")
 @click.option("--id", type=str, default=None)
@@ -192,7 +190,7 @@ def launch(cmd: str, host: str, id:str=None):
         command_buffer[host].put(f'launch "{cmd}"\r')
 
 
-@ssh_client.command()
+@ssh_proc_mux_shell.command()
 @click.argument("host")
 def ps(host: str):
     global command_buffer
@@ -200,7 +198,7 @@ def ps(host: str):
     command_buffer[host].put("ps\r")
 
 
-@ssh_client.command()
+@ssh_proc_mux_shell.command()
 @click.argument("host")
 def killall(host: str):
     global command_buffer
@@ -208,7 +206,7 @@ def killall(host: str):
     command_buffer[host].put("killall\r")
 
 
-@ssh_client.command()
+@ssh_proc_mux_shell.command()
 @click.argument("pid", type=int)
 @click.argument("host", type=str)
 def kill(pid: int, host:str):
@@ -217,7 +215,7 @@ def kill(pid: int, host:str):
     command_buffer[host].put(f"kill {pid}\r")
 
 
-@ssh_client.command()
+@ssh_proc_mux_shell.command()
 @click.argument("host")
 def disconnect(host: str):
     global ssh_sessions
@@ -227,4 +225,4 @@ def disconnect(host: str):
 
 
 if __name__ == "__main__":
-    ssh_client()
+    ssh_proc_mux_shell()
